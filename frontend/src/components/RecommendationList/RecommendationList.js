@@ -36,9 +36,6 @@ function RecommendationList({ hasSearched = false, recommendations }) {
   return (
     <div className="flex h-full flex-col gap-6">
       <div className="space-y-2">
-        <span className="inline-flex rounded-full bg-cyan-50 px-3 py-1 text-xs font-semibold uppercase tracking-[0.24em] text-cyan-700">
-          Etapa 2
-        </span>
         <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
           <div className="space-y-1">
             <h2 className="text-2xl font-bold tracking-tight text-slate-900">
@@ -139,7 +136,7 @@ RecommendationList.propTypes = {
       matchedPreferences: PropTypes.arrayOf(PropTypes.string).isRequired,
       name: PropTypes.string.isRequired,
       score: PropTypes.number.isRequired,
-    })
+    }),
   ).isRequired,
 };
 

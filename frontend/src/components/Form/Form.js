@@ -55,9 +55,6 @@ function Form({ onRecommendationsChange }) {
   return (
     <div className="flex h-full flex-col gap-6">
       <div className="space-y-2">
-        <span className="inline-flex rounded-full bg-slate-900 px-3 py-1 text-xs font-semibold uppercase tracking-[0.24em] text-white">
-          Etapa 1
-        </span>
         <h2 className="text-2xl font-bold tracking-tight text-slate-900">
           Defina o perfil ideal
         </h2>
@@ -135,10 +132,7 @@ function Form({ onRecommendationsChange }) {
           </div>
         ) : null}
 
-        <SubmitButton
-          disabled={isSubmitDisabled}
-          text="Gerar recomendacao"
-        />
+        <SubmitButton disabled={isSubmitDisabled} text="Gerar recomendacao" />
       </form>
     </div>
   );
