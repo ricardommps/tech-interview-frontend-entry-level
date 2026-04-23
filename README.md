@@ -84,6 +84,74 @@ yarn test:coverage
 - Carga de produtos com cancelamento seguro da requisicao ao desmontar a tela
 - Melhor feedback visual para navegacao por teclado nos cards de selecao
 
+## Informacoes para avaliacao
+
+### Arquivos principais
+
+- `frontend/src/services/recommendation.service.js`
+  Concentra a regra de negocio da recomendacao.
+
+- `frontend/src/components/Form/Form.js`
+  Controla o formulario e dispara a geracao do resultado.
+
+- `frontend/src/components/RecommendationList/RecommendationList.js`
+  Renderiza os produtos recomendados e os detalhes do match.
+
+- `frontend/src/hooks/useProducts.js`
+  Busca os produtos na API e deriva as opcoes de preferencias e funcionalidades.
+
+- `frontend/src/services/product.service.js`
+  Faz a chamada ao `json-server` usando `fetch`.
+
+### Decisoes de implementacao
+
+- A recomendacao so muda quando o usuario clica em `Gerar recomendacao`.
+  Isso deixa o comportamento mais previsivel e coerente com a presenca do botao no fluxo.
+
+- A regra foi mantida separada da interface.
+  A UI coleta os dados e exibe o resultado; a decisao fica centralizada no service.
+
+- A lista de preferencias e funcionalidades nao ficou hardcoded.
+  As opcoes sao derivadas do catalogo retornado pela API.
+
+- A URL da API pode ser configurada com `REACT_APP_API_URL`.
+  O projeto tambem inclui o arquivo `frontend/.env.example`.
+
+### Interface
+
+- O layout foi ajustado para funcionar melhor em larguras intermediarias.
+- Os cards de selecao receberam refinamentos de espacamento e foco visivel.
+- O resumo do formulario foi reorganizado para evitar textos espremidos.
+- O formato exibido na interface ficou com rotulos mais amigaveis: `Produto unico` e `Lista priorizada`.
+
+### Testes e validacao
+
+Foram adicionados testes para:
+
+- `recommendation.service`
+- `product.service`
+- `useProducts`
+- fluxo principal da aplicacao em `App.test.js`
+
+Cenarios cobertos:
+
+- `SingleProduct`
+- `MultipleProducts`
+- desempate
+- ausencia de criterios
+- tipo invalido
+- erro no carregamento dos produtos
+- manutencao do resultado atual ate um novo submit
+- troca de formato sem alterar o resultado antes de novo clique em `Gerar recomendacao`
+
+Validacoes executadas:
+
+```bash
+cd frontend
+yarn test --watchAll=false
+yarn build
+```
+
 ## Regras de negocio adotadas
 
 - Cada preferencia selecionada e cada funcionalidade selecionada valem `1 ponto`
