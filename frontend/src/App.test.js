@@ -89,7 +89,7 @@ describe('App', () => {
     });
   });
 
-  test('Recalcula a recomendacao automaticamente apos o primeiro envio', async () => {
+  test('Mantem o resultado atual ate um novo envio do formulario', async () => {
     render(<App />);
 
     userEvent.click(screen.getByLabelText(/Automação de marketing/i));
@@ -106,10 +106,63 @@ describe('App', () => {
 
     userEvent.click(screen.getByLabelText(/Integração com chatbots/i));
 
+    expect(
+      screen.getByText('RD Station Marketing', { selector: 'h3' })
+    ).toBeInTheDocument();
+    expect(
+      screen.queryByText('RD Conversas', { selector: 'h3' })
+    ).not.toBeInTheDocument();
+
+    userEvent.click(
+      screen.getByRole('button', { name: /Gerar recomendacao/i })
+    );
+
     await waitFor(() => {
       expect(
         screen.getByText('RD Conversas', { selector: 'h3' })
       ).toBeInTheDocument();
+    });
+  });
+
+  test('Nao altera o resultado ao trocar o formato ate um novo envio', async () => {
+    render(<App />);
+
+    userEvent.click(screen.getByLabelText(/Automação de marketing/i));
+    userEvent.click(screen.getByLabelText(/Integração com chatbots/i));
+    userEvent.click(screen.getByRole('radio', { name: /Produto unico/i }));
+    userEvent.click(
+      screen.getByRole('button', { name: /Gerar recomendacao/i })
+    );
+
+    await waitFor(() => {
+      expect(
+        screen.getByText('RD Conversas', { selector: 'h3' })
+      ).toBeInTheDocument();
+    });
+
+    expect(
+      screen.queryByText('RD Station Marketing', { selector: 'h3' })
+    ).not.toBeInTheDocument();
+
+    userEvent.click(screen.getByRole('radio', { name: /Lista priorizada/i }));
+
+    expect(
+      screen.getByText('RD Conversas', { selector: 'h3' })
+    ).toBeInTheDocument();
+    expect(
+      screen.queryByText('RD Station Marketing', { selector: 'h3' })
+    ).not.toBeInTheDocument();
+
+    userEvent.click(
+      screen.getByRole('button', { name: /Gerar recomendacao/i })
+    );
+
+    await waitFor(() => {
+      expect(
+        screen
+          .getAllByRole('heading', { level: 3 })
+          .map((element) => element.textContent)
+      ).toEqual(['RD Station Marketing', 'RD Conversas']);
     });
   });
 });

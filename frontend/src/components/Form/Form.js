@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { Preferences, Features, RecommendationType } from './Fields';
 import { SubmitButton } from './SubmitButton';
 import useProducts from '../../hooks/useProducts';
@@ -12,22 +12,17 @@ const INITIAL_FORM_STATE = {
   selectedRecommendationType: '',
 };
 
+const RECOMMENDATION_TYPE_LABELS = {
+  SingleProduct: 'Produto unico',
+  MultipleProducts: 'Lista priorizada',
+};
+
 function Form({ onRecommendationsChange }) {
   const { preferences, features, products, isLoading, error } = useProducts();
   const { formData, handleChange } = useForm({
     ...INITIAL_FORM_STATE,
   });
-  const [hasSubmitted, setHasSubmitted] = useState(false);
-
   const { getRecommendations } = useRecommendations(products);
-
-  useEffect(() => {
-    if (!hasSubmitted) {
-      return;
-    }
-
-    onRecommendationsChange(getRecommendations(formData));
-  }, [formData, getRecommendations, hasSubmitted, onRecommendationsChange]);
 
   const handleFieldChange = (field, value) => {
     handleChange(field, value);
@@ -35,7 +30,7 @@ function Form({ onRecommendationsChange }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    setHasSubmitted(true);
+    onRecommendationsChange(getRecommendations(formData));
   };
 
   const selectedItemsCount =
@@ -48,17 +43,22 @@ function Form({ onRecommendationsChange }) {
   const summaryCards = [
     {
       label: 'Preferencias',
+      labelClassName: 'text-[10px] sm:text-[11px]',
       value: formData.selectedPreferences.length,
     },
     {
       label: 'Funcionalidades',
+      labelClassName: 'text-[9px] tracking-[0.12em] sm:text-[10px] sm:tracking-[0.14em]',
       value: formData.selectedFeatures.length,
     },
     {
-      className: 'sm:col-span-2 xl:col-span-1',
+      className: 'min-[480px]:col-span-2',
       label: 'Formato',
-      value: formData.selectedRecommendationType || 'Selecione um modo',
-      valueClassName: 'text-sm leading-6',
+      labelClassName: 'text-[10px] sm:text-[11px]',
+      value:
+        RECOMMENDATION_TYPE_LABELS[formData.selectedRecommendationType] ||
+        'Selecione um modo',
+      valueClassName: 'max-w-full text-sm leading-6 sm:text-base',
     },
   ];
 
@@ -109,21 +109,26 @@ function Form({ onRecommendationsChange }) {
           />
         </div>
 
-        <div className="grid gap-3 rounded-3xl border border-slate-200 bg-slate-50 p-4 sm:grid-cols-2 xl:grid-cols-3">
+        <div className="grid gap-3 rounded-3xl border border-slate-200 bg-slate-50 p-4 min-[480px]:grid-cols-2">
           {summaryCards.map((card) => (
             <div
               key={card.label}
               className={[
-                'min-w-0 rounded-2xl bg-white px-4 py-3 shadow-sm shadow-slate-200/70',
+                'min-w-0 rounded-2xl bg-white px-5 py-4 shadow-sm shadow-slate-200/70',
                 card.className || '',
               ].join(' ')}
             >
-              <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500">
+              <p
+                className={[
+                  'pr-2 font-semibold uppercase tracking-[0.15em] text-slate-500',
+                  card.labelClassName || 'text-[10px] sm:text-[11px]',
+                ].join(' ')}
+              >
                 {card.label}
               </p>
               <p
                 className={[
-                  'mt-2 font-bold text-slate-900',
+                  'mt-3 break-words pr-1 font-bold text-slate-900',
                   card.valueClassName || 'text-2xl',
                 ].join(' ')}
               >

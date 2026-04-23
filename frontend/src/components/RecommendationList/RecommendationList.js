@@ -36,8 +36,8 @@ function RecommendationList({ hasSearched = false, recommendations }) {
   return (
     <div className="flex h-full flex-col gap-6">
       <div className="space-y-2">
-        <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
-          <div className="space-y-1">
+        <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
+          <div className="min-w-0 space-y-1">
             <h2 className="text-2xl font-bold tracking-tight text-slate-900">
               Resultado recomendado
             </h2>
@@ -47,7 +47,7 @@ function RecommendationList({ hasSearched = false, recommendations }) {
             </p>
           </div>
 
-          <span className="inline-flex rounded-full bg-slate-100 px-3 py-1 text-sm font-semibold text-slate-600">
+          <span className="inline-flex w-fit shrink-0 self-start whitespace-nowrap rounded-full bg-slate-100 px-3 py-1 text-sm font-semibold text-slate-600">
             {recommendations.length} produto(s)
           </span>
         </div>
