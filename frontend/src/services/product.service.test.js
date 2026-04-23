@@ -1,17 +1,24 @@
-import getProducts from './product.service';
+import getProducts, { DEFAULT_API_URL } from './product.service';
 
 describe('product.service', () => {
   const originalFetch = global.fetch;
   const originalConsoleError = console.error;
+  const originalApiUrl = process.env.REACT_APP_API_URL;
 
   beforeEach(() => {
     global.fetch = jest.fn();
     console.error = jest.fn();
+    delete process.env.REACT_APP_API_URL;
   });
 
   afterEach(() => {
     global.fetch = originalFetch;
     console.error = originalConsoleError;
+    if (originalApiUrl === undefined) {
+      delete process.env.REACT_APP_API_URL;
+    } else {
+      process.env.REACT_APP_API_URL = originalApiUrl;
+    }
     jest.clearAllMocks();
   });
 
@@ -24,7 +31,35 @@ describe('product.service', () => {
     });
 
     await expect(getProducts()).resolves.toEqual(mockResponse);
-    expect(global.fetch).toHaveBeenCalledWith('http://localhost:3001/products');
+    expect(global.fetch).toHaveBeenCalledWith(`${DEFAULT_API_URL}/products`, {});
+  });
+
+  test('usa REACT_APP_API_URL quando a variavel estiver configurada', async () => {
+    process.env.REACT_APP_API_URL = 'http://localhost:4000/';
+
+    global.fetch.mockResolvedValue({
+      ok: true,
+      json: jest.fn().mockResolvedValue([]),
+    });
+
+    await getProducts();
+
+    expect(global.fetch).toHaveBeenCalledWith('http://localhost:4000/products', {});
+  });
+
+  test('encaminha opcoes da requisicao para o fetch', async () => {
+    const signal = new AbortController().signal;
+
+    global.fetch.mockResolvedValue({
+      ok: true,
+      json: jest.fn().mockResolvedValue([]),
+    });
+
+    await getProducts({ signal });
+
+    expect(global.fetch).toHaveBeenCalledWith(`${DEFAULT_API_URL}/products`, {
+      signal,
+    });
   });
 
   test('lanca erro quando a resposta nao e bem sucedida', async () => {

@@ -2,6 +2,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 
 function Checkbox({
+  align = 'center',
   checked = false,
   children,
   className = '',
@@ -14,11 +15,13 @@ function Checkbox({
   value,
 }) {
   const isRadio = type === 'radio';
+  const isStartAligned = align === 'start';
 
   return (
     <label
       className={[
-        'group flex w-full items-start gap-3 rounded-2xl border p-4 text-left transition',
+        'group flex min-h-[84px] w-full gap-3 rounded-2xl border px-4 py-4 text-left transition focus-within:outline-none focus-within:ring-2 focus-within:ring-cyan-500 focus-within:ring-offset-2 focus-within:ring-offset-white',
+        isStartAligned ? 'items-start' : 'items-center',
         checked
           ? 'border-cyan-500 bg-cyan-50 shadow-sm shadow-cyan-100'
           : 'border-slate-200 bg-white hover:border-cyan-200 hover:bg-slate-50',
@@ -39,7 +42,8 @@ function Checkbox({
       />
       <span
         className={[
-          'mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center border transition',
+          'flex h-5 w-5 shrink-0 items-center justify-center border transition',
+          isStartAligned ? 'mt-0.5' : 'mt-0',
           isRadio ? 'rounded-full' : 'rounded-md',
           checked
             ? 'border-cyan-600 bg-cyan-600'
@@ -54,8 +58,8 @@ function Checkbox({
           ].join(' ')}
         />
       </span>
-      <span className="space-y-1">
-        <span className="block text-sm font-semibold leading-5 text-slate-900">
+      <span className="min-w-0 flex-1 space-y-1">
+        <span className="block text-sm font-semibold leading-6 text-slate-900">
           {children}
         </span>
         {description ? (
@@ -69,6 +73,7 @@ function Checkbox({
 }
 
 Checkbox.propTypes = {
+  align: PropTypes.oneOf(['center', 'start']),
   checked: PropTypes.bool,
   children: PropTypes.node.isRequired,
   className: PropTypes.string,

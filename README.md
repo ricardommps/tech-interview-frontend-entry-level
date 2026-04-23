@@ -14,6 +14,27 @@ Implementacao do desafio tecnico de frontend da RD Station com foco em legibilid
 - Node.js `18.3` ou superior
 - Yarn `1.x`
 
+## Configuracao da API
+
+Por padrao, o frontend consulta o backend em `http://localhost:3001`.
+
+Se quiser apontar para outra URL, defina a variavel `REACT_APP_API_URL` antes de iniciar o frontend. Exemplo:
+
+```bash
+cd frontend
+REACT_APP_API_URL=http://localhost:3001 yarn start
+```
+
+Se preferir, tambem pode criar um arquivo `frontend/.env` com:
+
+```bash
+REACT_APP_API_URL=http://localhost:3001
+```
+
+Existe um exemplo versionado em [frontend/.env.example](frontend/.env.example). Se quiser, basta usá-lo como base para criar o `frontend/.env`.
+
+Essa configuracao e usada pelo service em [frontend/src/services/product.service.js](frontend/src/services/product.service.js).
+
 ## Como executar
 
 1. Instale as dependencias:
@@ -59,6 +80,9 @@ yarn test:coverage
 - Layout responsivo com Tailwind CSS e estados de loading, erro e vazio
 - Coleta de preferencias e funcionalidades de forma estavel, sem aleatoriedade
 - Testes cobrindo fluxo da UI e cenarios centrais do servico
+- Configuracao da API via `REACT_APP_API_URL`
+- Carga de produtos com cancelamento seguro da requisicao ao desmontar a tela
+- Melhor feedback visual para navegacao por teclado nos cards de selecao
 
 ## Regras de negocio adotadas
 

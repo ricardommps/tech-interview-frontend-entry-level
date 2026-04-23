@@ -36,6 +36,7 @@ function RecommendationType({
         {recommendationTypeOptions.map((option, index) => (
           <div key={option.value}>
             <Checkbox
+              align="start"
               checked={selectedRecommendationType === option.value}
               description={option.description}
               disabled={disabled}

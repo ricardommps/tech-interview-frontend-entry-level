@@ -18,7 +18,7 @@ function Features({
 
   return (
     <fieldset className="space-y-4">
-      <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
+      <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
         <div>
           <legend className="text-lg font-bold text-slate-900">
             Funcionalidades essenciais
@@ -27,7 +27,7 @@ function Features({
             Marque os recursos que devem ter peso direto na recomendacao final.
           </p>
         </div>
-        <span className="inline-flex rounded-full bg-emerald-50 px-3 py-1 text-xs font-semibold uppercase tracking-[0.2em] text-emerald-700">
+        <span className="inline-flex min-w-fit items-center whitespace-nowrap rounded-full bg-emerald-50 px-4 py-2 text-xs font-semibold uppercase tracking-[0.14em] text-emerald-700">
           {selectedFeatures.length} selecionadas
         </span>
       </div>

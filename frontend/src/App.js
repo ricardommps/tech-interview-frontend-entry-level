@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import Form from './components/Form/Form';
 import RecommendationList from './components/RecommendationList/RecommendationList';
 
@@ -6,10 +6,10 @@ function App() {
   const [recommendations, setRecommendations] = useState([]);
   const [hasSearched, setHasSearched] = useState(false);
 
-  const handleRecommendationsChange = (nextRecommendations) => {
+  const handleRecommendationsChange = useCallback((nextRecommendations) => {
     setRecommendations(nextRecommendations);
     setHasSearched(true);
-  };
+  }, []);
 
   return (
     <div className="min-h-screen bg-slate-100 text-slate-900">

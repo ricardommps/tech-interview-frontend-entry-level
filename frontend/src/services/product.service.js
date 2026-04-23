@@ -1,8 +1,12 @@
-const baseURL = 'http://localhost:3001';
+const DEFAULT_API_URL = 'http://localhost:3001';
 
-const getProducts = async () => {
+const getApiBaseUrl = () => {
+  return (process.env.REACT_APP_API_URL || DEFAULT_API_URL).replace(/\/$/, '');
+};
+
+const getProducts = async (requestOptions = {}) => {
   try {
-    const response = await fetch(`${baseURL}/products`);
+    const response = await fetch(`${getApiBaseUrl()}/products`, requestOptions);
 
     if (!response.ok) {
       throw new Error(`Erro ao obter os produtos: ${response.status}`);
@@ -14,5 +18,7 @@ const getProducts = async () => {
     throw error;
   }
 };
+
+export { DEFAULT_API_URL, getApiBaseUrl };
 
 export default getProducts;

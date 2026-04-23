@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Preferences, Features, RecommendationType } from './Fields';
 import { SubmitButton } from './SubmitButton';
 import useProducts from '../../hooks/useProducts';
@@ -21,27 +21,21 @@ function Form({ onRecommendationsChange }) {
 
   const { getRecommendations } = useRecommendations(products);
 
-  const syncRecommendations = (nextFormData) => {
-    onRecommendationsChange(getRecommendations(nextFormData));
-  };
+  useEffect(() => {
+    if (!hasSubmitted) {
+      return;
+    }
+
+    onRecommendationsChange(getRecommendations(formData));
+  }, [formData, getRecommendations, hasSubmitted, onRecommendationsChange]);
 
   const handleFieldChange = (field, value) => {
-    const nextFormData = {
-      ...formData,
-      [field]: value,
-    };
-
     handleChange(field, value);
-
-    if (hasSubmitted) {
-      syncRecommendations(nextFormData);
-    }
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
     setHasSubmitted(true);
-    syncRecommendations(formData);
   };
 
   const selectedItemsCount =
@@ -51,6 +45,22 @@ function Form({ onRecommendationsChange }) {
     Boolean(error) ||
     !formData.selectedRecommendationType ||
     selectedItemsCount === 0;
+  const summaryCards = [
+    {
+      label: 'Preferencias',
+      value: formData.selectedPreferences.length,
+    },
+    {
+      label: 'Funcionalidades',
+      value: formData.selectedFeatures.length,
+    },
+    {
+      className: 'sm:col-span-2 xl:col-span-1',
+      label: 'Formato',
+      value: formData.selectedRecommendationType || 'Selecione um modo',
+      valueClassName: 'text-sm leading-6',
+    },
+  ];
 
   return (
     <div className="flex h-full flex-col gap-6">
@@ -99,31 +109,28 @@ function Form({ onRecommendationsChange }) {
           />
         </div>
 
-        <div className="grid gap-3 rounded-3xl border border-slate-200 bg-slate-50 p-4 sm:grid-cols-3">
-          <div className="rounded-2xl bg-white px-4 py-3 shadow-sm shadow-slate-200/70">
-            <p className="text-xs font-semibold uppercase tracking-[0.22em] text-slate-500">
-              Preferencias
-            </p>
-            <p className="mt-2 text-2xl font-bold text-slate-900">
-              {formData.selectedPreferences.length}
-            </p>
-          </div>
-          <div className="rounded-2xl bg-white px-4 py-3 shadow-sm shadow-slate-200/70">
-            <p className="text-xs font-semibold uppercase tracking-[0.22em] text-slate-500">
-              Funcionalidades
-            </p>
-            <p className="mt-2 text-2xl font-bold text-slate-900">
-              {formData.selectedFeatures.length}
-            </p>
-          </div>
-          <div className="rounded-2xl bg-white px-4 py-3 shadow-sm shadow-slate-200/70">
-            <p className="text-xs font-semibold uppercase tracking-[0.22em] text-slate-500">
-              Formato
-            </p>
-            <p className="mt-2 text-sm font-semibold text-slate-900">
-              {formData.selectedRecommendationType || 'Selecione um modo'}
-            </p>
-          </div>
+        <div className="grid gap-3 rounded-3xl border border-slate-200 bg-slate-50 p-4 sm:grid-cols-2 xl:grid-cols-3">
+          {summaryCards.map((card) => (
+            <div
+              key={card.label}
+              className={[
+                'min-w-0 rounded-2xl bg-white px-4 py-3 shadow-sm shadow-slate-200/70',
+                card.className || '',
+              ].join(' ')}
+            >
+              <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500">
+                {card.label}
+              </p>
+              <p
+                className={[
+                  'mt-2 font-bold text-slate-900',
+                  card.valueClassName || 'text-2xl',
+                ].join(' ')}
+              >
+                {card.value}
+              </p>
+            </div>
+          ))}
         </div>
 
         {isLoading ? (

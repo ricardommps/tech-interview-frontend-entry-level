@@ -8,38 +8,34 @@ const getUniqueValuesByField = (products, fieldName) => {
 };
 
 const useProducts = () => {
-  const [preferences, setPreferences] = useState([]);
-  const [features, setFeatures] = useState([]);
   const [products, setProducts] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState('');
 
   useEffect(() => {
-    let isMounted = true;
+    const controller = new AbortController();
 
     const fetchData = async () => {
       try {
         setIsLoading(true);
 
-        const nextProducts = await getProducts();
+        const nextProducts = await getProducts({ signal: controller.signal });
+        const normalizedProducts = Array.isArray(nextProducts) ? nextProducts : [];
 
-        if (!isMounted) {
+        setProducts(normalizedProducts);
+        setError('');
+      } catch (error) {
+        if (error.name === 'AbortError') {
           return;
         }
 
-        setProducts(nextProducts);
-        setPreferences(getUniqueValuesByField(nextProducts, 'preferences'));
-        setFeatures(getUniqueValuesByField(nextProducts, 'features'));
-        setError('');
-      } catch (error) {
         console.error('Erro ao obter os produtos:', error);
-        if (isMounted) {
-          setError(
-            'Nao foi possivel carregar os produtos agora. Tente novamente em instantes.'
-          );
-        }
+        setProducts([]);
+        setError(
+          'Nao foi possivel carregar os produtos agora. Tente novamente em instantes.'
+        );
       } finally {
-        if (isMounted) {
+        if (!controller.signal.aborted) {
           setIsLoading(false);
         }
       }
@@ -48,9 +44,12 @@ const useProducts = () => {
     fetchData();
 
     return () => {
-      isMounted = false;
+      controller.abort();
     };
   }, []);
+
+  const preferences = getUniqueValuesByField(products, 'preferences');
+  const features = getUniqueValuesByField(products, 'features');
 
   return { preferences, features, products, isLoading, error };
 };
